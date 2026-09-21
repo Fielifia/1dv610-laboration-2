@@ -1,0 +1,21 @@
+{
+  "name": "laboration-2",
+  "version": "1.0.0",
+  "description": "Det här är ditt privata GitLab-repo för kursens andra laborationsuppgift.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fielifia/1dv610-laboration-2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Fielifia/1dv610-laboration-2/issues"
+  },
+  "homepage": "https://github.com/Fielifia/1dv610-laboration-2#readme"
+}
