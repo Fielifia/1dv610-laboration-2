@@ -27,7 +27,7 @@ class Validation {
 
     for (const field of this.fields) {
       for (const rule of field.rules) {
-        if (!rule.validate(data[field.identifier])) {
+        if (!rule.validate(data[field.identifier], field, data)) {
           result.success = false
           const validationError = new ValidationError(field, rule)
           result.addError(validationError)

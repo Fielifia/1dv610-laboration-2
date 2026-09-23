@@ -1,9 +1,9 @@
 import Field from './Field.js'
-import { RequiredRule, EmailRule, MinLengthRule, OnlyLettersRule, OnlyDigitsRule } from './Rule.js'
+import { RequiredRule, EmailRule, MinLengthRule, OnlyLettersRule, OnlyDigitsRule, MatchingFieldsRule } from './Rule.js'
 import Validation from './Validation.js'
 
 // Test required
-console.log('Test required: ')
+console.log('Test required rule: ')
 
 const email = new Field('email')
 
@@ -13,41 +13,41 @@ const emailValidation = new Validation()
 
 emailValidation.addField(email)
 
-console.log(emailValidation.validate({email: 'mejl'}))
+console.log(emailValidation.validate({email: ' '}))
 
 
 // Test email format
+console.log('Test email format rule: ')
 
-console.log('Test email format: ')
+email.addRule(new EmailRule('Must be in email format'))
 
-const emailFormat = new Field('emailFormat')
-
-emailFormat.addRule(new EmailRule('Must be in email format'))
-
-const emailFormatValidation = new Validation()
-
-emailFormatValidation.addField(emailFormat)
-
-console.log(emailFormatValidation.validate({ emailFormat: 'sofia@hotmail.com' }))
+console.log(emailValidation.validate({ email: 'sofia@hotmail.com' }))
 
 
 // Test min length format
 
-console.log('Test min length: ')
+console.log('Test min length rule: ')
 
 const name = new Field('name')
 
 name.addRule(new MinLengthRule(2, 'Must be at least 2 characters'))
 
-name.addRule(new OnlyLettersRule('Only letters accepted'))
-
 const minLengthValidation = new Validation()
 
 minLengthValidation.addField(name)
 
-console.log(minLengthValidation.validate({ name: 'Bo!' }))
+console.log(minLengthValidation.validate({ name: 'Bo' }))
+
+// Test only letters rule:
+console.log('Test only letters rule: ')
+
+name.addRule(new OnlyLettersRule('Only letters accepted'))
+
+console.log(minLengthValidation.validate({ name: 'Bo1' }))
 
 
+
+// Test only digits rule
 console.log('Test only digits rule: ')
 
 const age = new Field('age')
@@ -59,3 +59,22 @@ const onlyDigitsValidation = new Validation()
 onlyDigitsValidation.addField(age)
 
 console.log(onlyDigitsValidation.validate({ age: '8' }))
+
+
+// Test matching rule (password)
+console.log('Test match fields rule: ')
+
+const password = new Field('password')
+const confirm = new Field('confirm')
+
+confirm.addRule(new MatchingFieldsRule('password', 'Passwords must be identical'))
+
+const matchingFieldsValidation = new Validation()
+
+matchingFieldsValidation.addField(password)
+matchingFieldsValidation.addField(confirm)
+
+console.log(matchingFieldsValidation.validate({
+  password: 'password',
+  confirm: 'password'
+}))

@@ -1,113 +1,136 @@
 export class Rule {
 
   constructor(errorMessage) {
-    this.parameters = {}
     this.errorMessage = errorMessage
   }
 
-  validate(data) {
+  validate(value, field, formData) {
     return true
   }
 }
 
 export class RequiredRule extends Rule {
-  validate(data) {
-    return data !== null && data !== undefined && data !== ''
+
+  validate(value, field, formData) {
+    return value !== null && value !== undefined && value !== ''
   }
 }
 
 export class EmailRule extends Rule {
-  validate(data) {
+
+  validate(value, field, formData) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return emailRegex.test(data)
+    return emailRegex.test(value)
   }
 }
 
+
 export class OnlyLettersRule extends Rule {
-  validate(data) {
+
+  validate(value, field, formData) {
     const letterRegex = /^\p{L}*$/u
-    return letterRegex.test(data)
+    return letterRegex.test(value)
   }
 }
 
 export class OnlyDigitsRule extends Rule {
-  validate(data) {
+
+  validate(value, field, formData) {
     const digitRegex = /^\d+$/
-    return digitRegex.test(data)
+    return digitRegex.test(value)
   }
 }
 
+
 export class MinLengthRule extends Rule {
+
   constructor(minLength, errorMessage) {
     super(errorMessage)
     this.minLength = minLength
   }
 
-  validate(data) {
-    return data.length >= this.minLength
+  validate(value, field, formData) {
+    return value.length >= this.minLength
   }
 }
 
 export class MaxLengthRule extends Rule {
-  constructor(maxLength) {
+
+  constructor(maxLength, errorMessage) {
+    super(errorMessage)
     this.maxLength = maxLength
   }
 
-  validate(data) {
-    return data.length <= this.maxLength
+  validate(value, field, formData) {
+    return value.length <= this.maxLength
   }
 }
 
 export class MinValueRule extends Rule {
-  constructor(minValue) {
+
+  constructor(minValue, errorMessage) {
+    super(errorMessage)
     this.minValue = minValue
   }
 
-  validate(data) {
-    return Number(data) >= this.minValue
+  validate(value, field, formData) {
+    return Number(value) >= this.minValue
   }
 }
 
 export class MaxValueRule extends Rule {
-  constructor(maxValue) {
+
+  constructor(maxValue, errorMessage) {
+    super(errorMessage)
     this.maxValue = maxValue
   }
 
-  validate(data) {
-    return Number(data) <= this.maxValue
+  validate(value, field, formData) {
+    return Number(value) <= this.maxValue
   }
 }
 
 
 export class UppercaseRule extends Rule {
-  validate(data) {
+
+  validate(value, field, formData) {
     const uppercaseRegex = /\p{Lu}/u
-    return uppercaseRegex.test(data)
+    return uppercaseRegex.test(value)
   }
 }
 
 export class LowercaseRule extends Rule {
-  validate(data) {
+
+  validate(value, field, formData) {
     const lowercaseRegex = /\p{Ll}/u
-    return lowercaseRegex.test(data)
+    return lowercaseRegex.test(value)
   }
 }
 
 export class SpecialCharacterRule extends Rule {
-  validate(data) {
+
+  validate(value, field, formData) {
     const specialCharacterRegex = /[^\p{L}\d\s]/u
-    return specialCharacterRegex.test(data)
+    return specialCharacterRegex.test(value)
   }
 }
 
 export class NoCodeOrLinksRule extends Rule {
-  validate(data) {
+
+  validate(value, field, formData) {
     const codeRegex = /<[^>]*>|javascript:/i
     const linkRegex = /(https?:\/\/[^\s]+|www\.[^\s]+|[a-zA-Z0-9-]+\.[a-zA-Z]{2,})/i
-    return (codeRegex.test(data) && linkRegex.test(data))
+
+    return (!codeRegex.test(value) && !linkRegex.test(value))
   }
 }
 
 export class MatchingFieldsRule extends Rule {
-  // Logic
+  constructor(identifier, errorMessage) {
+    super(errorMessage)
+    this.identifier = identifier
+  }
+  validate(value, field, formData) {
+    return value === formData[this.identifier]
+  }
 }

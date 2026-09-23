@@ -7,7 +7,7 @@ class Result {
   }
 
   addError(validationError) {
-      this.errors.push(validationError)
+    this.errors.push(validationError)
   }
 
 }
