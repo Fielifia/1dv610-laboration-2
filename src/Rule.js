@@ -14,13 +14,13 @@ export class Rule {
 }
 
 export class RequiredRule extends Rule {
-  
+
   constructor(errorMessage) {
     super(errorMessage || 'This field is required.')
   }
 
   validate(value, field, formData) {
-    return value !== null && value !== undefined && value !== ''
+    return value !== null && value !== undefined && value.trim() !== ''
   }
 }
 
@@ -65,6 +65,10 @@ export class OnlyDigitsRule extends Rule {
 export class MinLengthRule extends Rule {
 
   constructor(minLength, errorMessage) {
+    if (!Number.isInteger(minLength) || minLength < 0) {
+      throw new Error('minLength must be a non-negative integer')
+    }
+
     super(errorMessage || `This field must contain at least ${minLength} characters.`)
     this.minLength = minLength
   }
@@ -77,6 +81,10 @@ export class MinLengthRule extends Rule {
 export class MaxLengthRule extends Rule {
 
   constructor(maxLength, errorMessage) {
+    if (!Number.isInteger(maxLength) || maxLength < 0) {
+      throw new Error('maxLength must be a non-negative integer')
+    }
+
     super(errorMessage || `This field may contain at most ${maxLength} characters.`)
     this.maxLength = maxLength
   }
@@ -89,6 +97,10 @@ export class MaxLengthRule extends Rule {
 export class MinValueRule extends Rule {
 
   constructor(minValue, errorMessage) {
+    if (!typeof minValue !== 'number' || Number.isNaN(minValue)) {
+      throw new Error('minValue must be a number')
+    }
+
     super(errorMessage || `This value must be at least ${minValue}.`)
     this.minValue = minValue
   }
@@ -99,8 +111,12 @@ export class MinValueRule extends Rule {
 }
 
 export class MaxValueRule extends Rule {
-  
+
   constructor(maxValue, errorMessage) {
+    if (!typeof maxValue !== 'number' || Number.isNaN(maxValue)) {
+      throw new Error('maxValue must be a number')
+    }
+
     super(errorMessage || `This value must not exceed ${maxValue}.`)
     this.maxValue = maxValue
   }
