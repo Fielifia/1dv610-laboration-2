@@ -2,10 +2,10 @@ export class Rule {
 
   constructor(errorMessage) {
     if (this.constructor === Rule) {
-      throw new Error('Rule is an abstract class and cannot be instant')
+      throw new Error('Rule is an abstract class and cannot be instantiated')
     }
 
-    this.errorMessage = errorMessage || 'Field is invalid'
+    this.errorMessage = errorMessage
   }
 
   validate(value, field, formData) {
@@ -14,6 +14,10 @@ export class Rule {
 }
 
 export class RequiredRule extends Rule {
+  
+  constructor(errorMessage) {
+    super(errorMessage || 'This field is required.')
+  }
 
   validate(value, field, formData) {
     return value !== null && value !== undefined && value !== ''
@@ -21,6 +25,10 @@ export class RequiredRule extends Rule {
 }
 
 export class EmailRule extends Rule {
+
+  constructor(errorMessage) {
+    super(errorMessage || 'Please enter a valid email address.')
+  }
 
   validate(value, field, formData) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -31,6 +39,10 @@ export class EmailRule extends Rule {
 
 export class OnlyLettersRule extends Rule {
 
+  constructor(errorMessage) {
+    super(errorMessage || 'This field may only contain letters.')
+  }
+
   validate(value, field, formData) {
     const letterRegex = /^\p{L}*$/u
     return letterRegex.test(value)
@@ -38,6 +50,10 @@ export class OnlyLettersRule extends Rule {
 }
 
 export class OnlyDigitsRule extends Rule {
+
+  constructor(errorMessage) {
+    super(errorMessage || 'This field may only contain digits.')
+  }
 
   validate(value, field, formData) {
     const digitRegex = /^\d+$/
@@ -49,53 +65,56 @@ export class OnlyDigitsRule extends Rule {
 export class MinLengthRule extends Rule {
 
   constructor(minLength, errorMessage) {
-    super(errorMessage)
+    super(errorMessage || `This field must contain at least ${minLength} characters.`)
     this.minLength = minLength
   }
 
   validate(value, field, formData) {
-    return value.length >= this.minLength
+    return value.length >= this.minLength && value.length >= 0
   }
 }
 
 export class MaxLengthRule extends Rule {
 
   constructor(maxLength, errorMessage) {
-    super(errorMessage)
+    super(errorMessage || `This field may contain at most ${maxLength} characters.`)
     this.maxLength = maxLength
   }
 
   validate(value, field, formData) {
-    return value.length <= this.maxLength
+    return value.length <= this.maxLength && value.length >= 0
   }
 }
 
 export class MinValueRule extends Rule {
 
   constructor(minValue, errorMessage) {
-    super(errorMessage)
+    super(errorMessage || `This value must be at least ${minValue}.`)
     this.minValue = minValue
   }
 
   validate(value, field, formData) {
-    return Number(value) >= this.minValue
+    return Number(value) >= this.minValue && value.length >= 0
   }
 }
 
 export class MaxValueRule extends Rule {
-
+  
   constructor(maxValue, errorMessage) {
-    super(errorMessage)
+    super(errorMessage || `This value must not exceed ${maxValue}.`)
     this.maxValue = maxValue
   }
 
   validate(value, field, formData) {
-    return Number(value) <= this.maxValue
+    return Number(value) <= this.maxValue && value.length >= 0
   }
 }
 
 
 export class UppercaseRule extends Rule {
+  constructor(errorMessage) {
+    super(errorMessage || 'This field must contain an uppercase letter.')
+  }
 
   validate(value, field, formData) {
     const uppercaseRegex = /\p{Lu}/u
@@ -104,6 +123,9 @@ export class UppercaseRule extends Rule {
 }
 
 export class LowercaseRule extends Rule {
+  constructor(errorMessage) {
+    super(errorMessage || 'This field must contain an lowercase letter.')
+  }
 
   validate(value, field, formData) {
     const lowercaseRegex = /\p{Ll}/u
@@ -112,6 +134,10 @@ export class LowercaseRule extends Rule {
 }
 
 export class SpecialCharacterRule extends Rule {
+  constructor(errorMessage) {
+    super(errorMessage)
+    this.errorMessage = errorMessage || 'This field must contain a special character.'
+  }
 
   validate(value, field, formData) {
     const specialCharacterRegex = /[^\p{L}\d\s]/u
@@ -120,6 +146,9 @@ export class SpecialCharacterRule extends Rule {
 }
 
 export class NoCodeOrLinksRule extends Rule {
+  constructor(errorMessage) {
+    super(errorMessage || 'This field may not contain code or links.')
+  }
 
   validate(value, field, formData) {
     const codeRegex = /<[^>]*>|javascript:/i
@@ -131,9 +160,10 @@ export class NoCodeOrLinksRule extends Rule {
 
 export class MatchingFieldsRule extends Rule {
   constructor(identifier, errorMessage) {
-    super(errorMessage)
+    super(errorMessage || 'The fields do not match.')
     this.identifier = identifier
   }
+
   validate(value, field, formData) {
     return value === formData[this.identifier]
   }
