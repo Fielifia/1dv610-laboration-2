@@ -1,11 +1,15 @@
 export class Rule {
 
   constructor(errorMessage) {
-    this.errorMessage = errorMessage
+    if (this.constructor === Rule) {
+      throw new Error('Rule is an abstract class and cannot be instant')
+    }
+
+    this.errorMessage = errorMessage || 'Field is invalid'
   }
 
   validate(value, field, formData) {
-    return true
+    throw new Error(`The method 'validate()' must be implemented by the subclass [${this.constructor.name}]`)
   }
 }
 

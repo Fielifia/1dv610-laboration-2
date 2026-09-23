@@ -7,4 +7,5 @@ class ValidationError {
   }
 
 }
+
 export default ValidationError

@@ -6,7 +6,6 @@ class Field {
   }
 
   addRule(rule) {
-
     if (this.rules.some(existingRule => existingRule.constructor === rule.constructor)) {
       throw new Error(`Rule already exists for field ${this.identifier}`)
     }
