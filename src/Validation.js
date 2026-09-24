@@ -1,5 +1,6 @@
 import Result from './Result.js'
 import ValidationError from './ValidationError.js'
+import { RequiredRule } from './Rule.js'
 
 class Validation {
 
@@ -26,8 +27,26 @@ class Validation {
     const result = new Result(true)
 
     for (const field of this.fields) {
+      const value = data[field.identifier]
+
+      const isEmpty = value === null
+        || value === undefined
+        || typeof value === 'string' && value.trim() === ''
+
+      if (isEmpty) {
+        const requiredRuleInstance = field.rules.find(r => r instanceof RequiredRule)
+
+        if (requiredRuleInstance) {
+          if (!requiredRuleInstance.validate(value, field, data)) {
+            result.success = false
+            const validationError = new ValidationError(field, requiredRuleInstance)
+            result.addError(validationError)
+          }
+        }
+        continue
+      }
       for (const rule of field.rules) {
-        if (!rule.validate(data[field.identifier], field, data)) {
+        if (!rule.validate(value, field, data)) {
           result.success = false
           const validationError = new ValidationError(field, rule)
           result.addError(validationError)
