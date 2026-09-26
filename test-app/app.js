@@ -14,25 +14,25 @@ const resultReport = document.querySelector('.result-report')
 
 form.addEventListener('submit', event => {
   event.preventDefault()
-  
+
   const formData = {
     username: document.querySelector('#username').value
   }
-  
+
   const result = registrationValidation.validate(formData)
-  
+
   resultReport.innerHTML = ''
-  
+
   if (result.success) {
     const message = document.createElement('p')
     message.textContent = 'Valid!'
     resultReport.append(message)
+  } else {
+    const message = document.createElement('p')
+    message.textContent = 'Invalid!'
+    resultReport.append(message)
   }
-  
-  const message = document.createElement('p')
-  message.textContent = 'Invalid!'
-  resultReport.append(message)
-  
+
   for (const error of result.errors) {
     const errorMessage = document.createElement('p')
     errorMessage.textContent = error.errorMessage
