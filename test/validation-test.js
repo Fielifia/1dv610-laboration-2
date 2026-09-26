@@ -1,6 +1,6 @@
-import Field from './Field.js'
-import { EmailRule, LowercaseRule, MatchingFieldsRule, MaxLengthRule, MinValueRule, MaxValueRule, MinLengthRule, NoCodeOrLinksRule, OnlyDigitsRule, OnlyLettersRule, RequiredRule, SpecialCharacterRule, UppercaseRule } from './Rule.js'
-import Validation from './Validation.js'
+import Field from '../src/Field.js'
+import { EmailRule, LowercaseRule, MatchingFieldsRule, MaxLengthRule, MinValueRule, MaxValueRule, MinLengthRule, NoCodeOrLinksRule, OnlyDigitsRule, OnlyLettersRule, RequiredRule, SpecialCharacterRule, UppercaseRule } from '../src/Rule.js'
+import Validation from '../src/Validation.js'
 
 const password = new Field('password')
 password.addRule(new RequiredRule)
