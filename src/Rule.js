@@ -140,7 +140,7 @@ export class UppercaseRule extends Rule {
 
 export class LowercaseRule extends Rule {
   constructor(errorMessage) {
-    super(errorMessage || 'This field must contain an lowercase letter.')
+    super(errorMessage || 'This field must contain a lowercase letter.')
   }
 
   validate(value, field, formData) {

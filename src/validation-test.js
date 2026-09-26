@@ -16,7 +16,7 @@ password.addRule(new UppercaseRule)
 password.addRule(new LowercaseRule)
 password.addRule(new SpecialCharacterRule)
 password.addRule(new NoCodeOrLinksRule)
-password.addRule(new MatchingFieldsRule('confirm'))
+confirm.addRule(new MatchingFieldsRule('password'))
 
 
 const passwordValidation = new Validation()
@@ -86,3 +86,12 @@ console.log(passwordValidation.validate({ 'password': 'Sofia@1990', 'confirm': '
 console.log('\nTest no code or links rule:')
 console.log('Success: false:')
 console.log(passwordValidation.validate({ 'password': '<b>Sofia@1990', 'confirm': '<b>Sofia@1990' }))
+
+// MATCHING FIELDS RULE
+console.log('\nTest matching fields rule:')
+console.log('Success: true:')
+console.log(passwordValidation.validate({ 'password': 'Sofia@1990', 'confirm': 'Sofia@1990' }))
+
+console.log('\nTest matching fields rule:')
+console.log('Success: false:')
+console.log(passwordValidation.validate({ 'password': 'Sofia@1990', 'confirm': 'Sofia@@1990' }))
