@@ -1,14 +1,8 @@
 import Field from './Field.js'
-import { RequiredRule, UppercaseRule, LowercaseRule, MinLengthRule, MaxLengthRule, NoCodeOrLinksRule, SpecialCharacterRule, MatchingFieldsRule } from './Rule.js'
+import { EmailRule, LowercaseRule, MatchingFieldsRule, MaxLengthRule, MinValueRule, MaxValueRule, MinLengthRule, NoCodeOrLinksRule, OnlyDigitsRule, OnlyLettersRule, RequiredRule, SpecialCharacterRule, UppercaseRule } from './Rule.js'
 import Validation from './Validation.js'
 
-// Test required
-console.log('Test password rules (required, minlength, uppercase, matching): ')
-
 const password = new Field('password')
-const confirm = new Field('confirm')
-
-
 password.addRule(new RequiredRule)
 password.addRule(new MinLengthRule(8))
 password.addRule(new MaxLengthRule(18))
@@ -16,13 +10,33 @@ password.addRule(new UppercaseRule)
 password.addRule(new LowercaseRule)
 password.addRule(new SpecialCharacterRule)
 password.addRule(new NoCodeOrLinksRule)
-confirm.addRule(new MatchingFieldsRule('password'))
-
 
 const passwordValidation = new Validation()
-
 passwordValidation.addField(password)
+
+const confirm = new Field('confirm')
+confirm.addRule(new MatchingFieldsRule('password'))
 passwordValidation.addField(confirm)
+
+const name = new Field('name')
+name.addRule(new OnlyLettersRule)
+
+const nameValidation = new Validation()
+nameValidation.addField(name)
+
+const age = new Field('age')
+age.addRule(new OnlyDigitsRule)
+age.addRule(new MinValueRule(0))
+age.addRule(new MaxValueRule(100))
+
+const ageValidation = new Validation()
+ageValidation.addField(age)
+
+const email = new Field('email')
+email.addRule(new EmailRule)
+
+const emailValidation = new Validation()
+emailValidation.addField(email)
 
 // REQUIRED RULE
 console.log('\nTest required rule:')
@@ -95,3 +109,49 @@ console.log(passwordValidation.validate({ 'password': 'Sofia@1990', 'confirm': '
 console.log('\nTest matching fields rule:')
 console.log('Success: false:')
 console.log(passwordValidation.validate({ 'password': 'Sofia@1990', 'confirm': 'Sofia@@1990' }))
+
+
+// ONLY LETTERS RULE
+console.log('\nTest only letters rule:')
+console.log('Success: true:')
+console.log(nameValidation.validate({ 'name': 'Sofia' }))
+
+console.log('\nTest only letters rule:')
+console.log('Success: false:')
+console.log(nameValidation.validate({ 'name': 'Sofia.1990.com' }))
+
+// ONLY DIGITS RULE
+console.log('\nTest only digits rule:')
+console.log('Success: true:')
+console.log(ageValidation.validate({ 'age': '19' }))
+
+console.log('\nTest only digits rule:')
+console.log('Success: false:')
+console.log(ageValidation.validate({ 'age': 'Sofia' }))
+
+// Min value RULE
+console.log('\nTest min value rule:')
+console.log('Success: true:')
+console.log(ageValidation.validate({ 'age': '19' }))
+
+console.log('\nTest min value rule:')
+console.log('Success: false:')
+console.log(ageValidation.validate({ 'age': '-19' }))
+
+// Max value RULE
+console.log('\nTest max value rule:')
+console.log('Success: true:')
+console.log(ageValidation.validate({ 'age': '19' }))
+
+console.log('\nTest max value rule:')
+console.log('Success: false:')
+console.log(ageValidation.validate({ 'age': '190' }))
+
+// EMAIL FORMAT RULE
+console.log('\nTest email format rule:')
+console.log('Success: true:')
+console.log(emailValidation.validate({ 'email': 'Sofia@1990.com' }))
+
+console.log('\nTest email format rule:')
+console.log('Success: false:')
+console.log(emailValidation.validate({ 'email': 'Sofia.1990.com' }))

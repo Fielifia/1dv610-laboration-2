@@ -97,7 +97,7 @@ export class MaxLengthRule extends Rule {
 export class MinValueRule extends Rule {
 
   constructor(minValue, errorMessage) {
-    if (!typeof minValue !== 'number' || Number.isNaN(minValue)) {
+    if (typeof minValue !== 'number' || Number.isNaN(minValue)) {
       throw new Error('minValue must be a number')
     }
 
@@ -113,7 +113,7 @@ export class MinValueRule extends Rule {
 export class MaxValueRule extends Rule {
 
   constructor(maxValue, errorMessage) {
-    if (!typeof maxValue !== 'number' || Number.isNaN(maxValue)) {
+    if (typeof maxValue !== 'number' || Number.isNaN(maxValue)) {
       throw new Error('maxValue must be a number')
     }
 
