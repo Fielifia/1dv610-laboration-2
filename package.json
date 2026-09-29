@@ -1,19 +1,23 @@
 {
   "name": "laboration-2",
   "version": "1.0.0",
-  "description": "Det här är ditt privata GitLab-repo för kursens andra laborationsuppgift.",
-  "main": "index.js",
+  "description": "A reusable JavaScript module for form validation.",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test/validation-test.js && node test/module-test.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Fielifia/1dv610-laboration-2.git"
   },
-  "keywords": [],
+  "keywords": [
+    "javascript",
+    "form-validation",
+    "validation",
+    "module"
+  ],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "bugs": {
     "url": "https://github.com/Fielifia/1dv610-laboration-2/issues"
   },
