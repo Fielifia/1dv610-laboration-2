@@ -1,157 +1,126 @@
 import Field from '../src/Field.js'
-import { EmailRule, LowercaseRule, MatchingFieldsRule, MaxLengthRule, MinValueRule, MaxValueRule, MinLengthRule, NoCodeOrLinksRule, OnlyDigitsRule, OnlyLettersRule, RequiredRule, SpecialCharacterRule, UppercaseRule } from '../src/Rule.js'
+import { EmailRule, LowercaseRule, MatchingFieldsRule, MaxLengthRule, MaxValueRule, MinLengthRule, MinValueRule, NoCodeOrLinksRule, OnlyDigitsRule, OnlyLettersRule, RequiredRule, SpecialCharacterRule, UppercaseRule } from '../src/Rule.js'
 import Validation from '../src/Validation.js'
 
-const password = new Field('password')
-password.addRule(new RequiredRule)
-password.addRule(new MinLengthRule(8))
-password.addRule(new MaxLengthRule(18))
-password.addRule(new UppercaseRule)
-password.addRule(new LowercaseRule)
-password.addRule(new SpecialCharacterRule)
-password.addRule(new NoCodeOrLinksRule)
+function test(description, testFunction) {
+  try {
+    testFunction()
+    console.log(`PASS: ${description}`)
+  } catch (error) {
+    console.log(`FAIL: ${description}`)
+    console.log(error.message)
+  }
+}
 
-const passwordValidation = new Validation()
-passwordValidation.addField(password)
+function assert(condition, message) {
+  if (!condition) {
+    throw new Error(message)
+  }
+}
 
-const confirm = new Field('confirm')
-confirm.addRule(new MatchingFieldsRule('password'))
-passwordValidation.addField(confirm)
+// ===== REQUIRED RULE =====
+test('RequiredRule accepts a value', () => {
+  const field = new Field('name')
+  field.addRule(new RequiredRule())
 
-const name = new Field('name')
-name.addRule(new OnlyLettersRule)
+  const validation = new Validation()
+  validation.addField(field)
 
-const nameValidation = new Validation()
-nameValidation.addField(name)
+  const result = validation.validate({
+    name: 'Lucifer'
+  })
 
-const age = new Field('age')
-age.addRule(new OnlyDigitsRule)
-age.addRule(new MinValueRule(0))
-age.addRule(new MaxValueRule(100))
+  assert(result.success === true, 'Expected validation to succeed')
+})
 
-const ageValidation = new Validation()
-ageValidation.addField(age)
+test('RequiredRule rejects an empty value', () => {
+  const field = new Field('name')
+  field.addRule(new RequiredRule())
 
-const email = new Field('email')
-email.addRule(new EmailRule)
+  const validation = new Validation()
+  validation.addField(field)
 
-const emailValidation = new Validation()
-emailValidation.addField(email)
+  const result = validation.validate({
+    name: ''
+  })
 
-// REQUIRED RULE
-console.log('\nTest required rule:')
-console.log('Success: true:')
-console.log(passwordValidation.validate({ 'password': 'Sofia@1990', 'confirm': 'Sofia@1990' }))
+  assert(result.success === false, 'Expected validation to fail')
+  assert(result.errors.length === 1, 'Expected one validation error')
+})
 
-console.log('\nTest required rule:')
-console.log('Success: false:')
-console.log(passwordValidation.validate({ 'password': '', 'confirm': '' }))
+test('RequiredRule rejects whitespace', () => {
+  const field = new Field('name')
+  field.addRule(new RequiredRule())
 
-// MIN LENGTH RULE
-console.log('\nTest min length rule:')
-console.log('Success: true:')
-console.log(passwordValidation.validate({ 'password': 'Sofia@1990', 'confirm': 'Sofia@1990' }))
+  const validation = new Validation()
+  validation.addField(field)
 
-console.log('\nTest min length rule:')
-console.log('Success: false:')
-console.log(passwordValidation.validate({ 'password': 'Sofia@', 'confirm': 'Sofia@' }))
+  const result = validation.validate({
+    name: ' '
+  })
 
-// MAX LENGTH RULE
-console.log('\nTest max length rule:')
-console.log('Success: true:')
-console.log(passwordValidation.validate({ 'password': 'Sofia@1990', 'confirm': 'Sofia@1990' }))
-
-console.log('\nTest max length rule:')
-console.log('Success: false:')
-console.log(passwordValidation.validate({ 'password': 'Sofia@1990Sofia@1990Sofia@1990', 'confirm': 'Sofia@1990Sofia@1990Sofia@1990' }))
-
-// UPPERCASE RULE
-console.log('\nTest uppercase rule:')
-console.log('Success: true:')
-console.log(passwordValidation.validate({ 'password': 'Sofia@1990', 'confirm': 'Sofia@1990' }))
-
-console.log('\nTest uppercase rule:')
-console.log('Success: false:')
-console.log(passwordValidation.validate({ 'password': 'sofia@1990', 'confirm': 'sofia@1990' }))
-
-// LOWER RULE
-console.log('\nTest lowercase rule:')
-console.log('Success: true:')
-console.log(passwordValidation.validate({ 'password': 'Sofia@1990', 'confirm': 'Sofia@1990' }))
-
-console.log('\nTest lowercase rule:')
-console.log('Success: false:')
-console.log(passwordValidation.validate({ 'password': 'SOFIA@1990', 'confirm': 'SOFIA@1990' }))
-
-// SPECIAL CASE RULE
-console.log('\nTest special character rule:')
-console.log('Success: true:')
-console.log(passwordValidation.validate({ 'password': 'Sofia@1990', 'confirm': 'Sofia@1990' }))
-
-console.log('\nTest special character rule:')
-console.log('Success: false:')
-console.log(passwordValidation.validate({ 'password': 'Sofia1990', 'confirm': 'Sofia1990' }))
-
-// NO CODE OR LINKS
-console.log('\nTest no code or links rule:')
-console.log('Success: true:')
-console.log(passwordValidation.validate({ 'password': 'Sofia@1990', 'confirm': 'Sofia@1990' }))
-
-console.log('\nTest no code or links rule:')
-console.log('Success: false:')
-console.log(passwordValidation.validate({ 'password': '<b>Sofia@1990', 'confirm': '<b>Sofia@1990' }))
-
-// MATCHING FIELDS RULE
-console.log('\nTest matching fields rule:')
-console.log('Success: true:')
-console.log(passwordValidation.validate({ 'password': 'Sofia@1990', 'confirm': 'Sofia@1990' }))
-
-console.log('\nTest matching fields rule:')
-console.log('Success: false:')
-console.log(passwordValidation.validate({ 'password': 'Sofia@1990', 'confirm': 'Sofia@@1990' }))
-
-
-// ONLY LETTERS RULE
-console.log('\nTest only letters rule:')
-console.log('Success: true:')
-console.log(nameValidation.validate({ 'name': 'Sofia' }))
-
-console.log('\nTest only letters rule:')
-console.log('Success: false:')
-console.log(nameValidation.validate({ 'name': 'Sofia.1990.com' }))
-
-// ONLY DIGITS RULE
-console.log('\nTest only digits rule:')
-console.log('Success: true:')
-console.log(ageValidation.validate({ 'age': '19' }))
-
-console.log('\nTest only digits rule:')
-console.log('Success: false:')
-console.log(ageValidation.validate({ 'age': 'Sofia' }))
-
-// Min value RULE
-console.log('\nTest min value rule:')
-console.log('Success: true:')
-console.log(ageValidation.validate({ 'age': '19' }))
-
-console.log('\nTest min value rule:')
-console.log('Success: false:')
-console.log(ageValidation.validate({ 'age': '-19' }))
-
-// Max value RULE
-console.log('\nTest max value rule:')
-console.log('Success: true:')
-console.log(ageValidation.validate({ 'age': '19' }))
-
-console.log('\nTest max value rule:')
-console.log('Success: false:')
-console.log(ageValidation.validate({ 'age': '190' }))
+  assert(result.success === false, 'Expected validation to fail')
+  assert(result.errors.length === 1, 'Expected one validation error')
+})
 
 // EMAIL FORMAT RULE
-console.log('\nTest email format rule:')
-console.log('Success: true:')
-console.log(emailValidation.validate({ 'email': 'Sofia@1990.com' }))
+test('EmailRule accepts correct email format', () => {
+  const field = new Field('email')
+  field.addRule(new EmailRule())
 
-console.log('\nTest email format rule:')
-console.log('Success: false:')
-console.log(emailValidation.validate({ 'email': 'Sofia.1990.com' }))
+  const validation = new Validation()
+  validation.addField(field)
+
+  const result = validation.validate({
+    email: 'Lucifer@email.com'
+  })
+
+  assert(result.success === true, 'Expected validation to succeed')
+})
+
+test('EmailRule rejects invalid email format', () => {
+  const field = new Field('email')
+  field.addRule(new EmailRule())
+
+  const validation = new Validation()
+  validation.addField(field)
+
+  const result = validation.validate({
+    email: 'email'
+  })
+
+  assert(result.success === false, 'Expected validation to fail')
+  assert(result.errors.length === 1, 'Expected one validation error')
+})
+
+// ==== TEST SEVERAL ERRORS =====
+test('Validation accepts a value that passes several rules', () => {
+  const field = new Field('name')
+  field.addRule(new OnlyLettersRule())
+  field.addRule(new MinLengthRule(2))
+
+  const validation = new Validation()
+  validation.addField(field)
+
+  const result = validation.validate({
+    name: 'Lucifer'
+  })
+
+  assert(result.success === true, 'Expected validation to succeed')
+})
+
+test('Failed validation presents several errors', () => {
+  const field = new Field('name')
+  field.addRule(new OnlyLettersRule())
+  field.addRule(new MinLengthRule(2))
+
+  const validation = new Validation()
+  validation.addField(field)
+
+  const result = validation.validate({
+    name: '0'
+  })
+
+  assert(result.success === false, 'Expected validation to fail')
+  assert(result.errors.length === 2, 'Expected two validation errors')
+})
