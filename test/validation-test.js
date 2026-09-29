@@ -358,6 +358,73 @@ test('SpecialCharacterRule rejects value missing a special character', () => {
   assert(result.errors.length === 1, 'Expected one validation error')
 })
 
+// ===== NO CODE OR LINKS RULE =====
+test('NoCodeOrLinksRule accepts value without code or links', () => {
+  const field = new Field('password')
+  field.addRule(new NoCodeOrLinksRule())
+
+  const validation = new Validation()
+  validation.addField(field)
+
+  const result = validation.validate({
+    password: 'Lucifer@password'
+  })
+
+  assert(result.success === true, 'Expected validation to succeed')
+})
+
+test('NoCodeOrLinksRule rejects value containing code or links', () => {
+  const field = new Field('password')
+  field.addRule(new NoCodeOrLinksRule())
+
+  const validation = new Validation()
+  validation.addField(field)
+
+  const result = validation.validate({
+    password: '<a href="https://google.com">Luciferpassword</a>'
+  })
+
+  assert(result.success === false, 'Expected validation to fail')
+  assert(result.errors.length === 1, 'Expected one validation error')
+})
+
+// ===== MATCHING FIELDS RULE =====
+test('MatchingFieldsRule accepts value matching another fields value', () => {
+  const field = new Field('password')
+  const confirm = new Field('confirm')
+  confirm.addRule(new MatchingFieldsRule('password'))
+
+  const validation = new Validation()
+  validation.addField(field)
+  validation.addField(confirm)
+
+
+  const result = validation.validate({
+    password: 'Lucifer@password',
+    confirm: 'Lucifer@password'
+  })
+
+  assert(result.success === true, 'Expected validation to succeed')
+})
+
+test('MatchingFieldsRule rejects value not matching another fields value', () => {
+  const field = new Field('password')
+  const confirm = new Field('confirm')
+  confirm.addRule(new MatchingFieldsRule('password'))
+
+  const validation = new Validation()
+  validation.addField(field)
+  validation.addField(confirm)
+
+  const result = validation.validate({
+    password: 'Lucifer@password',
+    confirm: 'Luciferpassword'
+  })
+
+  assert(result.success === false, 'Expected validation to fail')
+  assert(result.errors.length === 1, 'Expected one validation error')
+})
+
 // ==== TEST SEVERAL ERRORS =====
 test('Validation accepts a value that passes several rules', () => {
   const field = new Field('name')
