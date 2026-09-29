@@ -9,11 +9,11 @@
 
 | Namn | Förklaring | Reflektion och regler från Clean Code |
 | ---- | ---------- | -------------------------------------- |
-| `Validation` | Klassen ansvarar för att hålla ihop valideringen av flera fält och skapa ett resultat. | Namnet beskriver tydligt vad klassen representerar och är ett substantiv, vilket stämmer med Clean-Code-principen att klasser ska ha namn som beskriver vad de är. |
-| `ValidationError` | Representerar ett fel som uppstår när en regel inte uppfylls. | Namnet är tydligt och specifikt. Det hade varit mindre tydligt att bara kalla klassen `Error`, eftersom det inte hade framgått att det handlar om ett valideringsfel. |
-| `identifier` | Identifierar ett fält inom en `Validation`. | Jag tycker att `identifier` är bättre än exempelvis `name`, eftersom värdet används som en identifierare för fältet och även motsvarar nyckeln i formulärdatan. |
-| `errorMessage` | Innehåller meddelandet som ska visas när en regel inte uppfylls. | Namnet beskriver både vad värdet är och vad det används till. Det följer principen att namn ska avslöja intentionen. |
-| `fields` | Innehåller de fält som har lagts till i en `Validation`. | Namnet är enkelt och tydligt och beskriver vad variabeln innehållet utan onödig information. |
+| `Validation` | Klassen ansvarar för att hålla ihop valideringen av flera fält och skapa ett resultat. | **Class Names:** Klassnamnet är ett substantiv och beskriver tydligt vad klassen representerar. **Use Intention-Revealing Names:** Namnet gör det tydligt att klassen har med validering att göra. |
+| `Field` | Representerar ett fält som ska valideras och innehåller dess regler. | **Class Names:** Namnet är ett enkelt substantiv som beskriver vad objektet representerar. **Use Solution Domain Names:** `Field` är ett etablerat begrepp inom formulär och validering och därför lätt för andra programmerare att förstå. |
+| `addField` | Lägger till ett `Field` i en `Validation`. | **Method Names:** Metodnamnet använder ett verb och beskriver tydligt vad metoden gör. **Use Intention-Revealing Names:** Det framgår direkt att metoden lägger till ett fält i valideringen. |
+| `addRule` | Lägger till en valideringsregel i ett `Field`. | **Method Names:** Metodnamnet använder ett verb och beskriver tydligt vad metoden gör. **Use Intention-Revealing Names:** Programmeraren behöver inte känna till implementationen för att förstå metodens syfte. |
+| `validate()` | Kör valideringen av den data som skickas in och returnerar ett `Result`. | **Method Names:** Namnet beskriver handlingen som metoden utför. **Use Intention-Revealing Names:** Det framgår tydligt att metoden startar valideringen utan att namnet avslöjar onödiga implementationsdetaljer. |
 
 
 *Upptäckte du någon brist i din egen namngivning när du läste kapitlet om namngivning? Höll du med
@@ -23,7 +23,7 @@ Svar:
 
 Jag upptäckte framför allt att bra namn blir extra viktiga när koden ska användas av andra programmerare. I början var det lätt att använda korta namn som känns självklara när man själv skriver koden, men som inte säger lika mycket när någon annan ska förstå den.
 
-Jag håller med om principen att namn ska vara tydliga och beskriva sin avsikt. Jag tycker också att namn på klasser, metoder och variabler bör vara konsekventa så att man kan förstå hur de hänger ihop. Samtidigt tycker jag inte att ett namn alltid behöver vara så kort som möjligt. `requiredRuleInstance` är exempelvis längre än `Rule`, men i det sammanhanget tycker jag att det längre namnet gör koden lättare att förstå.
+Jag håller med om principen att namn ska vara tydliga och beskriva sin avsikt. Jag tycker också att namn på klasser, metoder och variabler bör vara konsekventa så att man kan förstå hur de hänger ihop. Samtidigt tycker jag inte att ett namn alltid behöver vara så kort som möjligt. Ett längre namn kan vara motiverat om det gör intentionen tydligare.
 
 Planeringen jag gjorde innan implementationen påverkade namngivningen positivt. Genom att först skriva ner och analysera vilka klasser och delar modulen skulle bestå av blev det lättare att fundera över vad de faktiskt representerade och därför vilka namn som passade.
 
@@ -33,11 +33,11 @@ Jag märkte också att det är lättare att bedöma namngivning i efterhand än 
 
 | Metodnamn | Länk eller kod | Antal rader (ej ws) | Reflektion |
 | --------- | --------------- | -------------------- | ---------- |
-| `Validation.validate()` | `src/Validation.js` | 29 | Metoden har flera ansvarsområden eftersom den både hanterar tomma värden, hittar `RequiredRule`, kör regler och skapar fel. Jag försökte ändå hålla ansvaret inom själva valideringsflödet. |
-| `Validation.addField()` | `src/Validation.js` | 6 | Metoden har ett tydligt ansvar: kontrollera att identifieraren är unik och lägga till fältet. Den är liten och lätt att förstå. |
-| `Validation.removeField()` | `src/Validation.js` | 6 | Metoden gör en sak och har ett tydligt namn. Den returnerar inget extra resultat när fältet inte finns, vilket gör användningen enkel. |
-| `Field.addRule()` | `src/Field.js` | 6 | Metoden kontrollerar att samma regeltyp inte läggs till flera gånger och lägger sedan till regeln. Jag tycker att namnet beskriver exakt vad metoden gör. |
-| `Result – constructor` | `src/Result.js` | 4 | Konstruktorn initierar resultatets status och lista över fel. Den är liten och har ett tydligt ansvar. |
+| `Validation.validate()` | `src/Validation.js` | 29 | **Do One Thing:** Metoden hanterar hela valideringsflödet, men gör samtidigt flera relaterade saker: kontrollerar tomma värden, hanterar `RequiredRule`, kör regler och skapar fel. En möjlig förändring skulle vara att dela upp delar av flödet i mindre metoder. Samtidigt tycker jag att den nuvarande strukturen gör själva valideringsflödet lätt att följa eftersom det finns på ett samlat ställe. |
+| `Validation.addField()` | `src/Validation.js` | 6 | **Do One Thing:** Metoden kontrollerar att identifieraren är unik och lägger sedan till fältet. Jag tycker att det är ett tydligt och avgränsat ansvar. Jag ser inget behov av att dela upp metoden ytterligare. |
+| `Validation.removeField()` | `src/Validation.js` | 6 | **Do One Thing:** Metoden hittar och tar bort ett fält. Den är liten och har ett tydligt ansvar. En möjlig förändring skulle vara att hantera ett saknat fält med ett felmeddelande, men den nuvarande lösningen är enkel och undviker att skapa ett fel för en situation som inte behöver vara ett problem. |
+| `Field.addRule()` | `src/Field.js` | 6 | **Do One Thing:** Metoden kontrollerar att samma regeltyp inte redan finns och lägger sedan till regeln. Jag tycker att ansvaret är tydligt och att metoden därför inte behöver delas upp. |
+| `MinLengthRule.constructor()` | `src/Rule.js` | 6 | **Do One Thing:** Konstruktorn kontrollerar att `minLength` är giltigt och initierar sedan regeln. Det är två steg inom samma ansvar: att skapa en giltig `MinLengthRule`. Jag ser ingen anledning att göra den mindre eller dela upp den. |
 
 
 *Upptäckte du någon brist i hur du tidigare skrivit funktioner/metoder när du läste kapitlet om
@@ -121,7 +121,7 @@ Jag använde AI mer som ett diskussions- och granskningsverktyg än som en käll
 
 AI var också ett stöd under analys- och planeringsfasen. Jag kunde exempelvis be om skelett och exempel på liknande lösningar för att få bättre förståelse för hur en viss typ av struktur kunde se ut. Jag bad då om exempel som var fristående från min egen kod och mitt eget problem, så att jag inte fick en färdig lösning utan exempel för att förstå principen och sedan själv analysera hur jag ville strukturera min egen modul.
 
-Jag har även använt AI för att resonera kring min egen kod och upptäcka potentiella problem, exempelvis hur `Validation`, `Field`, `Rule` och `Result` borde samarbeta och vilka beteenden som borde testas. Det hjälpte mig framför att formulera frågor jag sedan kunde undersöka och lösa själv.
+Jag har även använt AI för att resonera kring min egen kod och upptäcka potentiella problem, exempelvis hur `Validation`, `Field`, `Rule` och `Result` borde samarbeta och vilka beteenden som borde testas. Det hjälpte mig framför allt att formulera frågor jag sedan kunde undersöka och lösa själv.
 
 Samtidigt använde jag Google mycket under arbetet för att själv söka efter information, exempel på syntax och möjliga lösningar på specifika programmeringsproblem. I flera situationer valde jag medvetet att försöka hitta och förstå lösningen själv genom dokumentation, sökresultat och olika exempel, istället för att ta den snabbare vägen och fråga AI direkt. Det gjorde att jag fick träna mer på att själv söka information och avgöra vilka lösningar som var relevanta för mitt problem.
 
