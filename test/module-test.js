@@ -87,6 +87,24 @@ test('Validation accepts an empty optional field', () => {
   assert(result.success === true, 'Expected validation to succeed')
 })
 
+// ===== REQUIRED + OTHER RULE =====
+test('Validation only reports RequiredRule for an empty required field', () => {
+  const field = new Field('name')
+
+  field.addRule(new RequiredRule())
+  field.addRule(new MinLengthRule(2))
+
+  const validation = new Validation()
+  validation.addField(field)
+
+  const result = validation.validate({
+    name: '',
+  })
+
+  assert(result.success === false, 'Expected validation to fail')
+  assert(result.errors.length === 1, 'Expected only one validation error')
+})
+
 // ===== MULTIPLE FIELDS WITH ERRORS =====
 test('Validation collects errors from multiple fields', () => {
   const nameField = new Field('name')
