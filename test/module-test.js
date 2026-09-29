@@ -58,7 +58,7 @@ test('Validation rejects duplicate rules', () => {
 })
 
 // ===== CUSTOM ERROR MESSAGE =====
-test('Validations uses a custom error message', () => {
+test('Validation uses a custom error message', () => {
   const field = new Field('name')
 
   field.addRule(new OnlyLettersRule('Write only letters'))
@@ -104,10 +104,34 @@ test('Validation collects errors from multiple fields', () => {
 
   const result = validation.validate({
     name: '0',
-    age: '-3',
+    age: 'Age',
     email: 'myEmail'
   })
 
   assert(result.success === false, 'Expected validation to fail')
-  assert(result.errors.length === 3, 'Expected tree validation errors')
+  assert(result.errors.length === 3, 'Expected three validation errors')
+})
+
+// ===== COMPLETE SUCCESS =====
+test('Validation succeeds when all fields are valid', () => {
+  const nameField = new Field('name')
+  const ageField = new Field('age')
+  const emailField = new Field('email')
+
+  nameField.addRule(new OnlyLettersRule())
+  ageField.addRule(new OnlyDigitsRule())
+  emailField.addRule(new EmailRule())
+
+  const validation = new Validation()
+  validation.addField(nameField)
+  validation.addField(ageField)
+  validation.addField(emailField)
+
+  const result = validation.validate({
+    name: 'Lucifer',
+    age: '20',
+    email: 'Lucifer@email.com'
+  })
+
+  assert(result.success === true, 'Expected validation to succeed')
 })
