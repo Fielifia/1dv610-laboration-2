@@ -2,6 +2,11 @@ import Validation from '../src/Validation.js'
 import Field from '../src/Field.js'
 import { RequiredRule, OnlyLettersRule, OnlyDigitsRule, MinValueRule, MaxValueRule, MinLengthRule, MaxLengthRule, EmailRule, UppercaseRule, LowercaseRule, SpecialCharacterRule, MatchingFieldsRule } from '../src/Rule.js'
 
+/** 
+ * Validation configuration for the registration form.
+ * 
+ * Defines the fields and rules used to validate submitted registration data.
+ */
 const registrationValidation = new Validation()
 
 const username = new Field('username')
@@ -38,6 +43,9 @@ registrationValidation.addField(passwordConfirmation)
 const form = document.querySelector('#registration')
 const resultReport = document.querySelector('.result-report')
 
+/**
+ * Validates the submitted registration form and displays the result.
+ */
 form.addEventListener('submit', event => {
   event.preventDefault()
 

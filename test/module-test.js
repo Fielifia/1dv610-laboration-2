@@ -2,6 +2,12 @@ import Field from '../src/Field.js'
 import { EmailRule, MinLengthRule, OnlyLettersRule, OnlyDigitsRule, RequiredRule } from '../src/Rule.js'
 import Validation from '../src/Validation.js'
 
+/**
+ * Runs a test and reports whether it passed or failed.
+ *
+ * @param {string} description - Description of the test.
+ * @param {Function} testFunction - Function containing the test logic.
+ */
 function test(description, testFunction) {
   try {
     testFunction()
@@ -12,6 +18,13 @@ function test(description, testFunction) {
   }
 }
 
+/**
+ * Checks that a condition is true.
+ *
+ * @param {boolean} condition - Condition that must be true.
+ * @param {string} message - Error message if the condition is false.
+ * @throws {Error} If the condition is false.
+ */
 function assert(condition, message) {
   if (!condition) {
     throw new Error(message)
